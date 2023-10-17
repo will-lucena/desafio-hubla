@@ -2,16 +2,24 @@
 
 const express = require("express");
 
+const cors = require('cors');
+const corsOptions = {
+    origin:'http://localhost:5173', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+
 // Constants
-const PORT = 8080;
-const HOST = "0.0.0.0";
+const PORT = 3000;
 
 // App
 const app = express();
+
+app.use(cors(corsOptions));
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.json({message: "Hello my friend"});
 });
 
-app.listen(PORT, HOST, () => {
-  console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Running on http://localhost:${PORT}`);
 });
