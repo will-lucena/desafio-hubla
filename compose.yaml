@@ -1,9 +1,39 @@
+version: '3'
+
 services:
   frontend:
     build: ./frontend
+    container_name: desafio-hubla-web
     ports:
-      - "5173:8080"
+      - '5173:8080'
+    depends_on:
+      db:
+        condition: service_healthy
   backend:
     build: ./backend
+    container_name: desafio-hubla-api
+    env_file:
+      - ./backend/.env
     ports:
-      - "49160:3000"
+      - '49160:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    container_name: desafio-hubla-db
+    restart: always
+    env_file: 
+      - ./backend/.env
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./db-data:/docker-entrypoint-initdb.d
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '5432:5432'
