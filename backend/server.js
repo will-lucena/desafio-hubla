@@ -1,13 +1,15 @@
 "use strict";
 
-const express = require("express");
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
+import express from "express";
 dotenv.config();
 
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import bodyParser from "body-parser";
+import cors from "cors";
 
-const { getUsers, createUser, connectToDB } = require("./queries.js");
+import { SellersRepository } from "./controllers/sellerRepository.js";
+
+import { createUser, getUsers } from "./queries.js";
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
@@ -27,7 +29,21 @@ app
 app.get("/", getUsers);
 app.post("/", createUser);
 
+let sellersRepository;
+
+app.get("/sellers", async (req, res) => {
+  const result = await sellersRepository.getAllSellers();
+  res.json(result);
+});
+
+app.post("/sellers", async (req, res) => {
+  const { name, role } = req.body;
+
+  const result = await sellersRepository.addSeller(name, role);
+  res.json(result);
+});
+
 app.listen(3000, async (req, res) => {
   console.log(`Running on http://localhost:3000`);
-  connectToDB();
+  sellersRepository = new SellersRepository();
 });

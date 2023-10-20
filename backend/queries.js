@@ -1,4 +1,6 @@
-const Pool = require("pg").Pool;
+import PgPool from "pg";
+
+const { Pool } = PgPool;
 
 let pool;
 
@@ -18,7 +20,7 @@ try {
 }
 
 const getUsers = (request, response) => {
-  pool.query("SELECT * FROM users ORDER BY id ASC", (error, results) => {
+  pool.query("SELECT * FROM sellers ORDER BY id ASC", (error, results) => {
     if (error) {
       throw error;
     }
@@ -36,6 +38,7 @@ const createUser = (request, response) => {
       if (error) {
         throw error;
       }
+
       response.status(201).send(`User added with ID: ${results.insertId}`);
     }
   );
@@ -49,4 +52,4 @@ const connectToDB = async () => {
   }
 };
 
-module.exports = { getUsers, createUser, connectToDB };
+export { connectToDB, createUser, getUsers, pool };
