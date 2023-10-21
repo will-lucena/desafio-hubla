@@ -1,8 +1,7 @@
 "use strict";
 
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
-dotenv.config();
 
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -41,6 +40,14 @@ app.post("/sellers", async (req, res) => {
 
   const result = await sellersRepository.addSeller(name, role);
   res.json(result);
+});
+
+app.post("/transactions", async (req, res) => {
+  const { payload } = req.body;
+
+  console.log(payload);
+
+  res.json().status(200);
 });
 
 app.listen(3000, async (req, res) => {
