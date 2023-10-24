@@ -6,11 +6,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
-import { addSeller, getAllSellers } from "./controllers/sellerRepository.js";
 import {
-  addBatch,
-  getAllTransactions,
-} from "./controllers/transactionRepository.js";
+  addSeller,
+  createProducerAffiliateRelation,
+  getAllSellers,
+} from "./controllers/sellerRepository.js";
+import { getAllTransactions } from "./controllers/transactionRepository.js";
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
@@ -43,6 +44,7 @@ app.post("/sellers", async (req, res) => {
 app.post("/transactions", async (req, res) => {
   const { payload } = req.body;
   await addBatch(payload);
+  await createProducerAffiliateRelation(payload);
   res.json().status(200);
 });
 
