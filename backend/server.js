@@ -6,9 +6,11 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
-import { SellersRepository } from "./controllers/sellerRepository.js";
-
-import { createUser, getUsers } from "./queries.js";
+import { addSeller, getAllSellers } from "./controllers/sellerRepository.js";
+import {
+  addBatch,
+  getAllTransactions,
+} from "./controllers/transactionRepository.js";
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
@@ -25,32 +27,28 @@ app
     })
   )
   .use(cors(corsOptions));
-app.get("/", getUsers);
-app.post("/", createUser);
-
-let sellersRepository;
 
 app.get("/sellers", async (req, res) => {
-  const result = await sellersRepository.getAllSellers();
+  const result = await getAllSellers();
   res.json(result);
 });
 
 app.post("/sellers", async (req, res) => {
   const { name, role } = req.body;
 
-  const result = await sellersRepository.addSeller(name, role);
+  const result = await addSeller(name, role);
   res.json(result);
 });
 
 app.post("/transactions", async (req, res) => {
   const { payload } = req.body;
-
-  console.log(payload);
-
+  await addBatch(payload);
   res.json().status(200);
 });
 
-app.listen(3000, async (req, res) => {
-  console.log(`Running on http://localhost:3000`);
-  sellersRepository = new SellersRepository();
+app.get("/transactions", async (req, res) => {
+  const result = await getAllTransactions();
+  res.json(result);
 });
+
+app.listen(3000, async (req, res) => {});
