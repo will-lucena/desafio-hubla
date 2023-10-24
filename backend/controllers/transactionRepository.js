@@ -52,7 +52,7 @@ async function addTransaction(transaction, clientOpen) {
 async function addBatch(transactions) {
   client = await connectToDB();
   transactions.forEach(async (transaction) => {
-    addTransaction(transaction, client);
+    await addTransaction(transaction, client);
   });
 }
 
