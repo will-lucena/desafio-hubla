@@ -1,7 +1,13 @@
-CREATE TABLE sellers (
+CREATE TABLE sellers(
   id SERIAL,
   name VARCHAR(20) PRIMARY KEY,
-  role CHAR(1)
+);
+
+CREATE TABLE affiliates(
+  id SERIAL,
+  name VARCHAR(20),
+  producers_name VARCHAR(20) PRIMARY KEY,
+  FOREIGN KEY (producers_name) REFERENCES sellers(name)
 );
 
 CREATE TABLE transactions(
