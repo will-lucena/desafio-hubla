@@ -1,14 +1,17 @@
 import { Transaction } from "../models/transaction.js";
 
-import { connectToDB } from "../utils/db.js";
+import { pool } from "../utils/db.js";
 import { addSeller } from "./sellerRepository.js";
 
-let client;
+let client = undefined;
 
 async function getAllTransactions() {
-  client = await connectToDB();
+  if (!client) {
+    client = await pool.connect();
+  }
   const result = await client.query("SELECT * FROM transactions;");
   if (result) {
+    client.release();
     return result?.rows.map(
       (row) =>
         new Transaction(
@@ -21,14 +24,13 @@ async function getAllTransactions() {
         )
     );
   }
+  client.release();
   return [];
 }
 
-async function addTransaction(transaction, clientOpen) {
-  if (clientOpen) {
-    client = clientOpen;
-  } else {
-    client = await connectToDB();
+async function addTransaction(transaction) {
+  if (!client) {
+    client = await pool.connect();
   }
 
   const { kind, date, seller, value, product } = transaction;
@@ -36,24 +38,29 @@ async function addTransaction(transaction, clientOpen) {
     return;
   }
 
-  await addSeller(client, seller, kind == 1 ? 0 : 1);
+  await addSeller(transaction);
+
   const result = await client.query(
     "INSERT INTO transactions (kind, date, seller_name, transaction_value, product_description) VALUES ($1, $2, $3, $4, $5);",
     [kind, date, seller, value, product]
   );
 
-  if (!clientOpen) {
-    client.release();
-  }
-
   return result;
 }
 
 async function addBatch(transactions) {
-  client = await connectToDB();
-  transactions.forEach(async (transaction) => {
-    await addTransaction(transaction, client);
-  });
+  try {
+    client = await pool.connect();
+    await client.query("BEGIN");
+    transactions.forEach(async (transaction) => {
+      await addTransaction(transaction);
+    });
+    await client.query("COMMIT");
+  } catch (err) {
+    client.query("ROLLBACK");
+  } finally {
+    client.release();
+  }
 }
 
-export { addBatch, addTransaction, getAllTransactions };
+export { addBatch, getAllTransactions };
