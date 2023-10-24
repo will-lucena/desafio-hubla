@@ -22,3 +22,10 @@ export class Transaction {
     this.product_description = product_description;
   }
 }
+
+export const TRANSACTIONS_TYPE = {
+  ProducerSale: 1,
+  AffiliateSale: 2,
+  CommissionPaid: 3,
+  CommisionReceived: 4,
+};
