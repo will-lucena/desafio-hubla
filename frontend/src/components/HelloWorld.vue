@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>{{ message }}</h1>
+    <!-- <h1>{{ message }}</h1> -->
     <input type="file" name="" id="" @change="onUpload" />
   </div>
 </template>
 
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const message = ref('')
 
@@ -56,6 +56,14 @@ function uploadTransactions(payload) {
     payload
   })
 }
+
+async function loadTransactions() {
+  message.value = (await axios.get(`${apiUrl}transactions`)).data
+}
+
+onMounted(() => {
+  loadTransactions()
+})
 </script>
 
 <style lang="scss" scoped></style>
