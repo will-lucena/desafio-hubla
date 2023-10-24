@@ -18,12 +18,4 @@ try {
   console.log("deu ruim pra criar a pool parceiro");
 }
 
-const connectToDB = async () => {
-  try {
-    return await pool.connect();
-  } catch (err) {
-    throw err;
-  }
-};
-
-export { connectToDB };
+export { pool };
