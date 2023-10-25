@@ -1,4 +1,4 @@
-import { Transaction } from "../models/transaction.js";
+import { TRANSACTIONS_TYPE, Transaction } from "../models/transaction.js";
 
 import { getClient, query } from "../utils/db.js";
 import { addSeller } from "./sellerRepository.js";
@@ -29,9 +29,18 @@ const addTransaction = async (client, transaction) => {
 
   await addSeller(transaction);
 
+  const operationMap = {
+    [TRANSACTIONS_TYPE.ProducerSale]: 1,
+    [TRANSACTIONS_TYPE.AffiliateSale]: 1,
+    [TRANSACTIONS_TYPE.CommissionPaid]: -1,
+    [TRANSACTIONS_TYPE.CommisionReceived]: 1,
+  };
+
+  const finalValue = operationMap[kind] * value;
+
   const result = await client.query(
     "INSERT INTO transactions (kind, date, seller_name, transaction_value, product_description) VALUES ($1, $2, $3, $4, $5);",
-    [kind, date, seller, value, product]
+    [kind, date, seller, finalValue, product]
   );
 
   return result;
