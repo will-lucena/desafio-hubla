@@ -5,8 +5,8 @@ CREATE TABLE sellers(
 
 CREATE TABLE affiliates(
   id SERIAL,
-  name VARCHAR(20),
-  producers_name VARCHAR(20) PRIMARY KEY,
+  name VARCHAR(20) PRIMARY KEY,
+  producers_name VARCHAR(20),
   FOREIGN KEY (producers_name) REFERENCES sellers(name)
 );
 
