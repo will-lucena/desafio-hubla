@@ -9,7 +9,6 @@ const getAllTransactions = async () => {
     return result?.rows.map(
       (row) =>
         new Transaction(
-          row.id,
           row.kind,
           row.date,
           row.seller_name,
@@ -22,8 +21,9 @@ const getAllTransactions = async () => {
 };
 
 const addTransaction = async (client, transaction) => {
-  const { kind, date, seller, value, product } = transaction;
-  if (!kind || !date || !seller || !value || !product) {
+  const { kind, date, sellerName, value, productDescription } = transaction;
+
+  if (!kind || !date || !sellerName || !value || !productDescription) {
     return;
   }
 
@@ -40,7 +40,7 @@ const addTransaction = async (client, transaction) => {
 
   const result = await client.query(
     "INSERT INTO transactions (kind, date, seller_name, transaction_value, product_description) VALUES ($1, $2, $3, $4, $5);",
-    [kind, date, seller, finalValue, product]
+    [kind, date, sellerName, finalValue, productDescription]
   );
 
   return result;

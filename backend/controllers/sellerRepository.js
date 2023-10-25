@@ -14,7 +14,7 @@ const getAllSellers = async () => {
 
 const addSeller = async (transaction) => {
   try {
-    const { seller, kind } = transaction;
+    const { sellerName, kind } = transaction;
 
     const roleMap = {
       1: SELLERS_KIND.Producer,
@@ -27,7 +27,7 @@ const addSeller = async (transaction) => {
 
     const res = await query(
       "INSERT INTO sellers (name, role) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING;",
-      [seller, role]
+      [sellerName, role]
     );
     return res;
   } catch (err) {}

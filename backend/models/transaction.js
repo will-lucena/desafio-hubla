@@ -1,25 +1,16 @@
 export class Transaction {
-  id;
   kind;
   date;
-  seller_name;
-  transaction_value;
-  product_description;
+  sellerName;
+  value;
+  productDescription;
 
-  constructor(
-    id,
-    kind,
-    date,
-    seller_name,
-    transaction_value,
-    product_description
-  ) {
-    this.id = id;
+  constructor(kind, date, sellerName, value, productDescription) {
     this.kind = kind;
     this.date = date;
-    this.seller_name = seller_name;
-    this.transaction_value = transaction_value;
-    this.product_description = product_description;
+    this.sellerName = sellerName;
+    this.value = value;
+    this.productDescription = productDescription;
   }
 }
 
