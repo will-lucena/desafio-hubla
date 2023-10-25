@@ -1,17 +1,11 @@
 import { Transaction } from "../models/transaction.js";
 
-import { pool } from "../utils/db.js";
+import { getClient, query } from "../utils/db.js";
 import { addSeller } from "./sellerRepository.js";
 
-let client = undefined;
-
-async function getAllTransactions() {
-  if (!client) {
-    client = await pool.connect();
-  }
-  const result = await client.query("SELECT * FROM transactions;");
+const getAllTransactions = async () => {
+  const result = await query("SELECT * FROM transactions;");
   if (result) {
-    client.release();
     return result?.rows.map(
       (row) =>
         new Transaction(
@@ -24,15 +18,10 @@ async function getAllTransactions() {
         )
     );
   }
-  client.release();
   return [];
-}
+};
 
-async function addTransaction(transaction) {
-  if (!client) {
-    client = await pool.connect();
-  }
-
+const addTransaction = async (client, transaction) => {
   const { kind, date, seller, value, product } = transaction;
   if (!kind || !date || !seller || !value || !product) {
     return;
@@ -46,21 +35,22 @@ async function addTransaction(transaction) {
   );
 
   return result;
-}
+};
 
-async function addBatch(transactions) {
+const addBatch = async (transactions) => {
+  let client;
   try {
-    client = await pool.connect();
+    client = await getClient();
     await client.query("BEGIN");
-    transactions.forEach(async (transaction) => {
-      await addTransaction(transaction);
-    });
+    for (const transaction of transactions) {
+      await addTransaction(client, transaction);
+    }
     await client.query("COMMIT");
   } catch (err) {
     client.query("ROLLBACK");
   } finally {
     client.release();
   }
-}
+};
 
 export { addBatch, getAllTransactions };
