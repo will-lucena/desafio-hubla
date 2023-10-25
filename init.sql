@@ -1,6 +1,7 @@
 CREATE TABLE sellers(
   id SERIAL,
   name VARCHAR(20) PRIMARY KEY,
+  role VARCHAR(9)
 );
 
 CREATE TABLE affiliates(
