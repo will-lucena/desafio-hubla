@@ -52,17 +52,28 @@ function sanitizeContent(transactions) {
 }
 
 function uploadTransactions(payload) {
-  axios.post(`${apiUrl}transactions`, {
-    payload
-  })
+  axios
+    .post(`${apiUrl}transactions`, {
+      payload
+    })
+    .then(() => {
+      loadTransactions()
+      loadBalances()
+    })
 }
 
 async function loadTransactions() {
   message.value = (await axios.get(`${apiUrl}transactions`)).data
 }
 
+async function loadBalances() {
+  axios.get(`${apiUrl}balances`)
+}
+
 onMounted(() => {
-  loadTransactions()
+  loadTransactions().then(() => {
+    loadBalances()
+  })
 })
 </script>
 
