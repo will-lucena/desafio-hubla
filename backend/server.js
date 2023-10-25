@@ -1,10 +1,10 @@
 "use strict";
 
-import "dotenv/config";
-import express from "express";
-
 import bodyParser from "body-parser";
 import cors from "cors";
+import "dotenv/config";
+import express from "express";
+import multer from "multer";
 
 import {
   addSeller,
@@ -16,12 +16,16 @@ import {
   addBatch,
   getAllTransactions,
 } from "./controllers/transactionRepository.js";
+import { parseTransactions } from "./utils/parser.js";
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
   optionSuccessStatus: 200,
 };
 
+const upload = multer({
+  dest: "uploads/",
+});
 const app = express();
 
 app
@@ -45,8 +49,9 @@ app.post("/sellers", async (req, res) => {
   res.json(result);
 });
 
-app.post("/transactions", async (req, res) => {
-  const { payload } = req.body;
+app.post("/transactions", upload.single("file"), async (req, res) => {
+  const filePath = req.file.path;
+  const payload = await parseTransactions(filePath);
   await addBatch(payload);
   await createProducerAffiliateRelation();
   res.json().status(200);

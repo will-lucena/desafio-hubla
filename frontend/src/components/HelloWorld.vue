@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- <h1>{{ message }}</h1> -->
-    <input type="file" name="" id="" @change="onUpload" />
+    <form>
+      <input type="file" name="" id="" @change="onUpload" />
+    </form>
   </div>
 </template>
 
@@ -25,36 +27,14 @@ axios
   })
 
 function onUpload(event) {
+  let formData = new FormData()
   const [file] = event.target.files
-
-  if (file) {
-    let reader = new FileReader()
-    reader.readAsText(file, 'UTF-8')
-    reader.onload = (evt) => {
-      sanitizeContent(evt.target.result)
-    }
-  }
-}
-
-function sanitizeContent(transactions) {
-  const transactionsArray = transactions.split('\n')
-  const mappedTransactions = transactionsArray.map((transaction) => {
-    const kind = transaction.substring(0, 1)
-    const date = transaction.substring(1, 26)
-    const product = transaction.substring(26, 56).trimEnd()
-    const value = transaction.substring(56, 66).trimEnd()
-    const seller = transaction.substring(66, 86).trimEnd()
-
-    return { kind, date, product, value, seller }
-  })
-
-  uploadTransactions(mappedTransactions)
-}
-
-function uploadTransactions(payload) {
+  formData.append('file', file)
   axios
-    .post(`${apiUrl}transactions`, {
-      payload
+    .post(`${apiUrl}transactions`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .then(() => {
       loadTransactions()
