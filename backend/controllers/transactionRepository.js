@@ -56,8 +56,14 @@ const addBatch = async (transactions) => {
     }
     await client.query("COMMIT");
   } catch (error) {
+    let customError = error;
+    if (error.message.includes("duplicate key value")) {
+      customError = new Error("Duplicated transaction", {
+        cause: error.detail,
+      });
+    }
     client.query("ROLLBACK");
-    throw error;
+    throw customError;
   } finally {
     client.release();
   }
