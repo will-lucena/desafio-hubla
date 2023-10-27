@@ -18,5 +18,6 @@ CREATE TABLE transactions(
   seller_name VARCHAR(20),
   product_description VARCHAR(30),
   FOREIGN KEY (seller_name) REFERENCES sellers(name),
-  transaction_value INT
+  transaction_value INT,
+  CONSTRAINT transaction_identifier UNIQUE (transaction_value, date, kind, seller_name)
 );
