@@ -2,26 +2,26 @@ import { open } from "fs/promises";
 import { Transaction } from "../models/transaction.js";
 
 export const parseTransactions = async (filePath) => {
-  if (filePath) {
-    const file = await open(filePath);
+  let file;
+  let transactions;
+  try {
+    file = await open(filePath);
 
-    const transactions = [];
+    transactions = [];
 
-    try {
-      for await (const line of file.readLines()) {
-        transactions.push(sanitizeContent(line));
-      }
-    } catch (error) {
-      throw error;
-    } finally {
-      file.close();
+    for await (const line of file.readLines()) {
+      transactions.push(sanitizeContent(line));
     }
-
-    return transactions;
+  } catch (error) {
+    throw error;
+  } finally {
+    file?.close();
   }
+
+  return transactions;
 };
 
-function sanitizeContent(transaction) {
+export const sanitizeContent = (transaction) => {
   const kind = transaction.substring(0, 1);
   const date = transaction.substring(1, 26);
   const product = transaction.substring(26, 56).trimEnd();
@@ -52,4 +52,4 @@ function sanitizeContent(transaction) {
   }
 
   return new Transaction(kind, date, seller, value, product);
-}
+};
