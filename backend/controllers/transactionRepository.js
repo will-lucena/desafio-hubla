@@ -55,8 +55,9 @@ const addBatch = async (transactions) => {
       await addTransaction(client, transaction);
     }
     await client.query("COMMIT");
-  } catch (err) {
+  } catch (error) {
     client.query("ROLLBACK");
+    throw error;
   } finally {
     client.release();
   }

@@ -14,8 +14,8 @@ try {
   };
 
   pool = new Pool(settings);
-} catch (err) {
-  console.log("deu ruim pra criar a pool parceiro");
+} catch (error) {
+  throw error("Fail to create a connection pool");
 }
 
 // the pool will emit an error on behalf of any idle clients

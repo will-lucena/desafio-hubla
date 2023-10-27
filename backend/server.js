@@ -51,10 +51,17 @@ app.post("/sellers", async (req, res) => {
 
 app.post("/transactions", upload.single("file"), async (req, res) => {
   const filePath = req.file.path;
-  const payload = await parseTransactions(filePath);
-  await addBatch(payload);
-  await createProducerAffiliateRelation();
-  res.json().status(200);
+  try {
+    const transactions = await parseTransactions(filePath);
+    await addBatch(transactions);
+    await createProducerAffiliateRelation();
+    return res.status(200).json(transactions);
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+      cause: error.cause,
+    });
+  }
 });
 
 app.get("/balances", async (req, res) => {
