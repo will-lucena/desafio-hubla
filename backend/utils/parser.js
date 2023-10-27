@@ -29,25 +29,26 @@ export const sanitizeContent = (transaction) => {
   const seller = transaction.substring(66, 86).trimEnd();
 
   let baseErrorMessage = "Fail to parse transaction";
-  let errorMessage = undefined;
+  const errors = [];
 
   if (!Number(kind)) {
-    errorMessage = `${baseErrorMessage} kind`;
+    errors.push("kind");
   }
 
   if (!new Date(date).getTime()) {
-    errorMessage = `${baseErrorMessage} date`;
+    errors.push("date");
   }
 
   if (!seller) {
-    errorMessage = `${baseErrorMessage} seller name`;
+    errors.push("seller name");
   }
 
   if (!Number(value)) {
-    errorMessage = `${baseErrorMessage} value`;
+    errors.push("value");
   }
 
-  if (errorMessage) {
+  if (errors.length > 0) {
+    const errorMessage = `${baseErrorMessage} ${errors.join(", ")}`;
     throw new Error(errorMessage, { cause: transaction });
   }
 
