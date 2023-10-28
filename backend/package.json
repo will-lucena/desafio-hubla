@@ -8,7 +8,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "jest",
-    "lint": "eslint . --fix --ext .js --ignore-path ../.gitignore"
+    "lint": "eslint . --fix --ext .js --ignore-path ../.gitignore",
+    "docs": "apidoc -i ./ -o apidoc"
   },
   "dependencies": {
     "cors": "^2.8.5",

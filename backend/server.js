@@ -65,6 +65,34 @@ app.get("/balances", async (req, res) => {
   }
 })
 
+/**
+ * @api {get} /transactions Request transasctions
+ * @apiName getTransactions
+ * @apiGroup Transactions
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       [
+ *        {
+            "kind": "1",
+            "date": "2022-01-15T22:20:30.000Z",
+            "sellerName": "VENDEDOR TESTE",
+            "value": 99999,
+            "productDescription": "PRODUTO TESTE"
+          },
+ *       ]
+ *     }
+ *
+ * @apiError FailToLoadTransactions Couldn't load transactions
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "message": "Fail to load transactions"
+ *     }
+ */
+
 app.get("/transactions", async (req, res) => {
   try {
     const result = await getAllTransactions()
