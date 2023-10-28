@@ -52,21 +52,49 @@ const addBatch = async (transactions) => {
     client = await getClient();
     await client.query("BEGIN");
     for (const transaction of transactions) {
-      await addTransaction(client, transaction);
+      if (isValidTransaction(transaction, transactions)) {
+        await addTransaction(client, transaction);
+      } else {
+        throw new Error("missing transaction on affiliate sale", {
+          cause: transaction.raw,
+        });
+      }
     }
     await client.query("COMMIT");
   } catch (error) {
-    let customError = error;
-    if (error.message.includes("duplicate key value")) {
-      customError = new Error("Duplicated transaction", {
-        cause: error.detail,
-      });
-    }
+    const customError = handleError(error);
     client.query("ROLLBACK");
     throw customError;
   } finally {
     client.release();
   }
+};
+
+const isValidTransaction = (transaction, transactions) => {
+  if (transaction.kind == TRANSACTIONS_TYPE.ProducerSale) {
+    return true;
+  }
+
+  const comissionPaidTransaction = transactions.find(
+    (target) =>
+      transaction.areSiblings(target) &&
+      target.kind == TRANSACTIONS_TYPE.CommissionPaid
+  );
+  const comissionReceivedTransaction = transactions.find(
+    (target) =>
+      transaction.areSiblings(target) &&
+      target.kind == TRANSACTIONS_TYPE.CommisionReceived
+  );
+
+  const affiliateSale = transactions.find(
+    (target) =>
+      transaction.areSiblings(target) &&
+      target.kind == TRANSACTIONS_TYPE.AffiliateSale
+  );
+
+  return (
+    comissionPaidTransaction && comissionReceivedTransaction && affiliateSale
+  );
 };
 
 export { addBatch, getAllTransactions };
