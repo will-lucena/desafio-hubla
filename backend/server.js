@@ -7,9 +7,7 @@ import express from "express";
 import multer from "multer";
 
 import {
-  addSeller,
   createProducerAffiliateRelation,
-  getAllSellers,
   getSellersBallances,
 } from "./controllers/sellerRepository.js";
 import {
@@ -37,26 +35,18 @@ app
   )
   .use(cors(corsOptions));
 
-app.get("/sellers", async (req, res) => {
-  const result = await getAllSellers();
-  res.json(result);
-});
-
-app.post("/sellers", async (req, res) => {
-  const { name, role } = req.body;
-
-  const result = await addSeller(name, role);
-  res.json(result);
-});
-
 app.post("/transactions", upload.single("file"), async (req, res) => {
-  const filePath = req.file.path;
   try {
-    const transactions = await parseTransactions(filePath);
-    await addBatch(transactions);
-    await createProducerAffiliateRelation();
+    const filePath = req.file.path;
+    const transactions = await saveTransactions(filePath);
     return res.status(200).json(transactions);
   } catch (error) {
+    if (error.message.includes("undefined")) {
+      return res.status(400).json({
+        message: "Invalid file",
+      });
+    }
+
     return res.status(400).json({
       message: error.message,
       cause: error.cause,
@@ -65,14 +55,32 @@ app.post("/transactions", upload.single("file"), async (req, res) => {
 });
 
 app.get("/balances", async (req, res) => {
-  const balances = await getSellersBallances();
-
-  res.json(balances);
+  try {
+    const balances = await getSellersBallances();
+    res.status(200).json(balances);
+  } catch (error) {
+    res.status(500).json({
+      message: "Fail to load balances",
+    });
+  }
 });
 
 app.get("/transactions", async (req, res) => {
-  const result = await getAllTransactions();
-  res.json(result);
+  try {
+    const result = await getAllTransactions();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: "Fail to load transactions",
+    });
+  }
 });
 
-app.listen(3000, async (req, res) => {});
+const saveTransactions = async () => {
+  const transactions = await parseTransactions(filePath);
+  await addBatch(transactions);
+  await createProducerAffiliateRelation();
+  return transactions;
+};
+
+app.listen(3000);
