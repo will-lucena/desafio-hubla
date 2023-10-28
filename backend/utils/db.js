@@ -26,11 +26,15 @@ pool.on("error", (err, client) => {
 });
 
 export const query = async (text, params) => {
-  const start = Date.now();
-  const res = await pool.query(text, params);
-  const duration = Date.now() - start;
-  // console.log("executed query", { text, duration, rows: res.rowCount });
-  return res;
+  try {
+    const start = Date.now();
+    const res = await pool.query(text, params);
+    const duration = Date.now() - start;
+    // console.log("executed query", { text, duration, rows: res.rowCount });
+    return res;
+  } catch (error) {
+    throw new Error("Fail to query", { cause: text });
+  }
 };
 
 export const getClient = () => {
