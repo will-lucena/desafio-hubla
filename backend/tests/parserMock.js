@@ -1,4 +1,4 @@
-import { Transaction } from "../models/transaction";
+import { Transaction } from "../models/transaction"
 
 export const correctTransaction = {
   raw: "12022-01-15T19:20:30-03:00CURSO DE BEM-ESTAR            0000012750JOSE CARLOS",
@@ -9,7 +9,7 @@ export const correctTransaction = {
     "0000012750",
     "CURSO DE BEM-ESTAR"
   ),
-};
+}
 
 export const wrongKindTransaction = {
   raw: "A2022-01-15T19:20:30-03:00CURSO DE BEM-ESTAR            0000012750JOSE CARLOS",
@@ -20,7 +20,7 @@ export const wrongKindTransaction = {
     "0000012750",
     "CURSO DE BEM-ESTAR"
   ),
-};
+}
 
 export const wrongDateTransaction = {
   raw: "12022-01-15T19:20:30      CURSO DE BEM-ESTAR            0000012750JOSE CARLOS",
@@ -31,7 +31,7 @@ export const wrongDateTransaction = {
     "0000012750",
     "CURSO DE BEM-ESTAR"
   ),
-};
+}
 
 export const wrongSellerNameTransaction = {
   raw: "12022-01-15T19:20:30-03:00CURSO DE BEM-ESTAR            0000012750",
@@ -42,7 +42,7 @@ export const wrongSellerNameTransaction = {
     "0000012750",
     "CURSO DE BEM-ESTAR"
   ),
-};
+}
 
 export const wrongValueTransaction = {
   raw: "12022-01-15T19:20:30-03:00CURSO DE BEM-ESTAR   0000012750JOSE CARLOS",
@@ -53,6 +53,6 @@ export const wrongValueTransaction = {
     "0000012750",
     "CURSO DE BEM-ESTAR"
   ),
-};
+}
 
-export const badFilePath = "akjsdha";
+export const badFilePath = "akjsdha"

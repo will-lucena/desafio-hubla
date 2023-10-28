@@ -1,9 +1,9 @@
 export class Seller {
-  name;
-  role;
+  name
+  role
 
   constructor(name, role) {
-    this.name = name;
-    this.role = role;
+    this.name = name
+    this.role = role
   }
 }

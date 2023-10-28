@@ -41,11 +41,11 @@ export const getAllTransactions = (newTransactions = []) => {
       product_description: "CURSO DE BEM-ESTAR",
     },
     ...newTransactions,
-  ];
-};
+  ]
+}
 
-export const addTransaction = () => {};
-export const addBatch = () => {};
+export const addTransaction = () => {}
+export const addBatch = () => {}
 
 export const mockTransaction = {
   kind: Math.ceil(Math.random() * 5),
@@ -53,4 +53,4 @@ export const mockTransaction = {
   seller_name: "Vendedor teste",
   transaction_value: Math.ceil(Math.random() * 100000),
   product_description: "Produto teste",
-};
+}

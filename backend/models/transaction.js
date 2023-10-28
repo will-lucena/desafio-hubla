@@ -1,30 +1,30 @@
 export class Transaction {
-  kind;
-  date;
-  sellerName;
-  value;
-  productDescription;
-  raw;
+  kind
+  date
+  sellerName
+  value
+  productDescription
+  raw
 
   constructor(kind, date, sellerName, value, productDescription, raw) {
-    this.kind = kind;
-    this.date = date;
-    this.sellerName = sellerName;
-    this.value = value;
-    this.productDescription = productDescription;
-    this.raw = raw;
+    this.kind = kind
+    this.date = date
+    this.sellerName = sellerName
+    this.value = value
+    this.productDescription = productDescription
+    this.raw = raw
   }
 
   areSiblings(transaction) {
     if (transaction.date !== this.date) {
-      return false;
+      return false
     }
 
     if (transaction.productDescription !== this.productDescription) {
-      return false;
+      return false
     }
 
-    return true;
+    return true
   }
 }
 
@@ -33,4 +33,4 @@ export const TRANSACTIONS_TYPE = {
   AffiliateSale: 2,
   CommissionPaid: 3,
   CommisionReceived: 4,
-};
+}
