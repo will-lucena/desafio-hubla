@@ -52,5 +52,5 @@ export const sanitizeContent = (transaction) => {
     throw new Error(errorMessage, { cause: transaction });
   }
 
-  return new Transaction(kind, date, seller, value, product);
+  return new Transaction(kind, date, seller, value, product, transaction);
 };
