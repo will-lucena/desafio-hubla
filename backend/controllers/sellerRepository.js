@@ -13,57 +13,53 @@ const getAllSellers = async () => {
 };
 
 const addSeller = async (transaction) => {
-  try {
-    const { sellerName, kind } = transaction;
+  const { sellerName, kind } = transaction;
 
-    const roleMap = {
-      1: SELLERS_KIND.Producer,
-      2: SELLERS_KIND.Affiliate,
-      3: SELLERS_KIND.Producer,
-      4: SELLERS_KIND.Affiliate,
-    };
+  const roleMap = {
+    1: SELLERS_KIND.Producer,
+    2: SELLERS_KIND.Affiliate,
+    3: SELLERS_KIND.Producer,
+    4: SELLERS_KIND.Affiliate,
+  };
 
-    const role = roleMap[kind];
+  const role = roleMap[kind];
 
-    const res = await query(
-      "INSERT INTO sellers (name, role) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING;",
-      [sellerName, role]
-    );
-    return res;
-  } catch (err) {}
+  const res = await query(
+    "INSERT INTO sellers (name, role) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING;",
+    [sellerName, role]
+  );
+  return res;
 };
 
 const createProducerAffiliateRelation = async () => {
-  try {
-    const commisionReceivedTransactions = await query(
-      "SELECT * FROM transactions WHERE kind = $1",
-      [TRANSACTIONS_TYPE.CommisionReceived]
+  const commisionReceivedTransactions = await query(
+    "SELECT * FROM transactions WHERE kind = $1",
+    [TRANSACTIONS_TYPE.CommisionReceived]
+  );
+
+  for (const transaction of commisionReceivedTransactions?.rows) {
+    const { date, seller_name, transaction_value, product_description } =
+      transaction;
+
+    const queryResult = await query(
+      "SELECT * FROM transactions WHERE kind = $1 AND transaction_value = $2 AND date = $3 AND product_description = $4",
+      [
+        TRANSACTIONS_TYPE.CommissionPaid,
+        transaction_value * -1,
+        date,
+        product_description,
+      ]
     );
 
-    for (const transaction of commisionReceivedTransactions?.rows) {
-      const { date, seller_name, transaction_value, product_description } =
-        transaction;
+    const [commissionPaidTransaction] = queryResult?.rows;
 
-      const queryResult = await query(
-        "SELECT * FROM transactions WHERE kind = $1 AND transaction_value = $2 AND date = $3 AND product_description = $4",
-        [
-          TRANSACTIONS_TYPE.CommissionPaid,
-          transaction_value * -1,
-          date,
-          product_description,
-        ]
-      );
+    await query(
+      "INSERT INTO affiliates (name, producers_name) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING;",
+      [seller_name, commissionPaidTransaction.seller_name]
+    );
+  }
 
-      const [commissionPaidTransaction] = queryResult?.rows;
-
-      await query(
-        "INSERT INTO affiliates (name, producers_name) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING;",
-        [seller_name, commissionPaidTransaction.seller_name]
-      );
-    }
-
-    return;
-  } catch (err) {}
+  return;
 };
 
 const getSellersBallances = async () => {
