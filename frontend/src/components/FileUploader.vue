@@ -27,8 +27,8 @@ function onUpload() {
 
   if (file) {
     uploadTransactionsFile(file)
-      .then(() => {
-        emit('success')
+      .then(({ data }) => {
+        emit('success', data)
       })
       .catch((error) => {
         emit('fail', error)
