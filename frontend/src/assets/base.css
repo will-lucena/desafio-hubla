@@ -34,6 +34,14 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+
+  --color-background-inverse: var(--vt-c-black-mute);
+  --color-background-soft-inverse: var(--vt-c-black-soft);
+  --color-border-inverse: var(--vt-c-divider-dark-2);
+  --color-border-hover-inverse: var(--vt-c-divider-dark-1);
+  --color-heading-inverse: var(--vt-c-text-dark-1);
+  --color-text-inverse: var(--vt-c-text-dark-1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,6 +55,13 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+
+    --color-background-inverse: var(--vt-c-white);
+    --color-background-soft-inverse: var(--vt-c-white-soft);
+    --color-border-inverse: var(--vt-c-divider-light-2);
+    --color-border-hover-inverse: var(--vt-c-divider-light-1);
+    --color-heading-inverse: var(--vt-c-text-light-1);
+    --color-text-inverse: var(--vt-c-text-light-1);
   }
 }
 

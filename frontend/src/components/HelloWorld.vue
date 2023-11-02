@@ -12,11 +12,13 @@
           :key="index"
           :balance="balance.balance"
           :name="balance.name"
+          @click="onClickSellerCard(balance.name)"
+          :is-selected="isFilteredBy(balance.name)"
         />
       </div>
     </section>
 
-    <TransactionsList :transactions="transactions" />
+    <TransactionsList :transactions="filteredTransactions" />
   </div>
 </template>
 
@@ -31,6 +33,15 @@ import TransactionsList from './TransactionsList.vue'
 const transactions = ref([])
 const balances = ref([])
 const hasBalances = computed(() => balances.value.length > 0)
+const activeFilter = ref([])
+
+const filteredTransactions = computed(() => {
+  if (activeFilter.value.length === 0) {
+    return transactions.value
+  }
+
+  return transactions.value.filter((el) => activeFilter.value.includes(el.sellerName))
+})
 
 function onUploadSuccess(payload) {
   loadBalances()
@@ -56,6 +67,18 @@ function onUploadSuccess(payload) {
 
 function onUploadFail(error) {
   console.log(error)
+}
+
+function onClickSellerCard(name) {
+  if (isFilteredBy(name)) {
+    activeFilter.value.splice(activeFilter.value.indexOf(name), 1)
+  } else {
+    activeFilter.value.push(name)
+  }
+}
+
+function isFilteredBy(name) {
+  return activeFilter.value.includes(name)
 }
 
 onMounted(() => {

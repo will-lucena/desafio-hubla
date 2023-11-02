@@ -40,12 +40,13 @@ const hasTransactions = computed(() => props.transactions.length > 0)
 
     padding: 1rem 0.5rem;
 
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--color-border);
   }
 
   &__column {
     flex: 1;
     text-align: left;
+    font-weight: 700;
   }
 }
 </style>

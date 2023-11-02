@@ -49,7 +49,7 @@ function onClickOpenUploader() {
 
   &__box {
     border-radius: 0.5rem;
-    border: 1px dashed white;
+    border: 1px dashed var(--color-border);
     padding: 1.5rem;
   }
 }

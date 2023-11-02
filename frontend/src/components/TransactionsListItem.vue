@@ -1,8 +1,12 @@
 <template>
   <td class="table__column">{{ seller }}</td>
   <td class="table__column">{{ product }}</td>
-  <td class="table__column">{{ kind }}</td>
-  <td class="table__column">{{ value }}</td>
+  <td class="table__column table__column--credit" :class="{ 'table__column--debit': isDebit }">
+    {{ kind }}
+  </td>
+  <td class="table__column table__column--credit" :class="{ 'table__column--debit': isDebit }">
+    {{ value }}
+  </td>
   <td class="table__column">{{ date }}</td>
 </template>
 
@@ -30,11 +34,21 @@ const kind = computed(() => {
 
   return kindMap[props.transaction.kind]
 })
+
+const isDebit = computed(() => props.transaction.kind == 3)
 </script>
 
 <style lang="scss" scoped>
 .table__column {
   flex: 1;
   text-align: left;
+
+  &--credit {
+    color: #2ecc71;
+  }
+
+  &--debit {
+    color: #d9534f;
+  }
 }
 </style>

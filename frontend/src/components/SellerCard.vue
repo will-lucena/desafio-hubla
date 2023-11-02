@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" :class="{ 'card--selected': isSelected }">
     <p>{{ name }}</p>
     <p>{{ convertedBalance }}</p>
   </div>
@@ -16,6 +16,10 @@ const props = defineProps({
   balance: {
     type: Number,
     required: true
+  },
+  isSelected: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -36,13 +40,19 @@ const convertedBalance = computed(() => {
 
   padding: 2rem;
   border-radius: 0.5rem;
-  border: 1px solid white;
+  border: 1px solid var(--color-border);
 
-  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0.25rem 0.5rem 0 rgba(18, 18, 18, 0.7);
   transition: 0.3s;
 
   &:hover {
-    box-shadow: 0 1rem 2rem 0 rgba(0, 0, 0, 1);
+    box-shadow: 0 0.5rem 1rem 0 rgba(18, 18, 18, 1);
+  }
+
+  &--selected {
+    background-color: var(--color-background-inverse);
+    border: 1px solid var(--color-border-inverse);
+    color: var(--color-text-inverse);
   }
 }
 </style>
