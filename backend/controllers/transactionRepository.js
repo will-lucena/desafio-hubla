@@ -12,7 +12,7 @@ const getAllTransactions = async () => {
           row.kind,
           row.date,
           row.seller_name,
-          row.transaction_value,
+          row.transaction_value / 100,
           row.product_description
         )
     )
