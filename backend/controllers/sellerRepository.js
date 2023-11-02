@@ -35,9 +35,9 @@ const createProducerAffiliateRelation = async () => {
   const commisionReceivedTransactions = await query(
     "SELECT * FROM transactions WHERE kind = $1",
     [TRANSACTIONS_TYPE.CommisionReceived]
-  )?.rows
+  )
 
-  for (const transaction of commisionReceivedTransactions) {
+  for (const transaction of commisionReceivedTransactions.rows) {
     const { date, seller_name, transaction_value, product_description } =
       transaction
 
@@ -49,9 +49,9 @@ const createProducerAffiliateRelation = async () => {
         date,
         product_description,
       ]
-    )?.rows
+    )
 
-    const [commissionPaidTransaction] = queryResult
+    const [commissionPaidTransaction] = queryResult.rows
 
     await query(
       "INSERT INTO affiliates (name, producers_name) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING;",

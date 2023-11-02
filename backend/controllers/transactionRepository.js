@@ -6,7 +6,7 @@ import { addSeller } from "./sellerRepository.js"
 const getAllTransactions = async () => {
   const result = await query("SELECT * FROM transactions;")
   if (result) {
-    return result?.rows.map(
+    return result.rows.map(
       (row) =>
         new Transaction(
           row.kind,
