@@ -1,24 +1,27 @@
 <template>
   <div>
-    <form>
+    <form class="uploader_form">
       <FileUploader @success="onUploadSuccess" @fail="onUploadFail" />
     </form>
 
-    <div class="balances">
-      <SellerCard
-        v-for="(balance, index) in balances"
-        :key="index"
-        :balance="balance.balance"
-        :name="balance.name"
-      />
-    </div>
+    <section v-if="hasBalances" class="balances__container">
+      <h2>Saldo dos vendedores e associados</h2>
+      <div class="balances">
+        <SellerCard
+          v-for="(balance, index) in balances"
+          :key="index"
+          :balance="balance.balance"
+          :name="balance.name"
+        />
+      </div>
+    </section>
 
     <TransactionsList :transactions="transactions" />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { loadBalances } from '../api/balances'
 import { loadTransactions } from '../api/transactions'
 import FileUploader from './FileUploader.vue'
@@ -27,6 +30,7 @@ import TransactionsList from './TransactionsList.vue'
 
 const transactions = ref([])
 const balances = ref([])
+const hasBalances = computed(() => balances.value.length > 0)
 
 function onUploadSuccess(payload) {
   loadBalances()
@@ -79,5 +83,19 @@ onMounted(() => {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.uploader_form,
+.balances__container {
+  background-color: var(--color-background-soft);
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
 }
 </style>

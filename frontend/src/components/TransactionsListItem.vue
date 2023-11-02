@@ -16,7 +16,7 @@ const props = defineProps({
 const seller = computed(() => props.transaction.sellerName)
 const product = computed(() => props.transaction.productDescription)
 const value = computed(() => {
-  const convertedValue = Math.abs(props.transaction.value / 100).toFixed(2)
+  const convertedValue = Math.abs(props.transaction.value).toFixed(2)
   return `R$ ${convertedValue}`
 })
 const date = computed(() => new Date(props.transaction.date).toLocaleString())

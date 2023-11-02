@@ -37,6 +37,10 @@ const hasTransactions = computed(() => props.transactions.length > 0)
   &__row {
     display: flex;
     flex-direction: row;
+
+    padding: 1rem 0.5rem;
+
+    border-bottom: 1px solid white;
   }
 
   &__column {
