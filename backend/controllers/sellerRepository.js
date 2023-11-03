@@ -33,7 +33,7 @@ const addSeller = async (transaction) => {
 
 const createProducerAffiliateRelation = async () => {
   const commisionReceivedTransactions = await query(
-    "SELECT * FROM transactions WHERE kind = $1",
+    "SELECT * FROM transactions WHERE kind = $1;",
     [TRANSACTIONS_TYPE.CommisionReceived]
   )
 
@@ -42,7 +42,7 @@ const createProducerAffiliateRelation = async () => {
       transaction
 
     const queryResult = await query(
-      "SELECT * FROM transactions WHERE kind = $1 AND transaction_value = $2 AND date = $3 AND product_description = $4",
+      "SELECT * FROM transactions WHERE kind = $1 AND transaction_value = $2 AND date = $3 AND product_description = $4;",
       [
         TRANSACTIONS_TYPE.CommissionPaid,
         transaction_value * -1,
@@ -81,14 +81,14 @@ const getSellersBallances = async () => {
 
 const getProducersBallances = async () => {
   const getProducersQueryResult = await query(
-    "SELECT sellers.name FROM sellers WHERE role = $1",
+    "SELECT sellers.name FROM sellers WHERE role = $1;",
     [SELLERS_KIND.Producer]
   )
 
   const balances = []
   for (const producer of getProducersQueryResult.rows) {
     const queryResult = await query(
-      "SELECT SUM(transaction_value) FROM transactions WHERE (transactions.seller_name = $1 AND transactions.kind = $2) OR (transactions.seller_name = $1 AND transactions.kind = $3)",
+      "SELECT SUM(transaction_value) FROM transactions WHERE (transactions.seller_name = $1 AND transactions.kind = $2) OR (transactions.seller_name = $1 AND transactions.kind = $3);",
       [
         producer.name,
         TRANSACTIONS_TYPE.ProducerSale,
@@ -106,14 +106,14 @@ const getProducersBallances = async () => {
 
 const getAffiliatesSales = async () => {
   const getProducersQueryResult = await query(
-    "SELECT sellers.name FROM sellers WHERE role = $1",
+    "SELECT sellers.name FROM sellers WHERE role = $1;",
     [SELLERS_KIND.Producer]
   )
 
   const balances = []
   for (const producer of getProducersQueryResult.rows) {
     const queryResult = await query(
-      "SELECT SUM(transactions.transaction_value) FROM transactions JOIN affiliates ON transactions.seller_name = affiliates.name WHERE transactions.kind = $2 AND affiliates.producers_name = $1",
+      "SELECT SUM(transactions.transaction_value) FROM transactions JOIN affiliates ON transactions.seller_name = affiliates.name WHERE transactions.kind = $2 AND affiliates.producers_name = $1;",
       [producer.name, TRANSACTIONS_TYPE.AffiliateSale]
     )
 
@@ -128,14 +128,14 @@ const getAffiliatesSales = async () => {
 
 const getAffiliatesBalances = async () => {
   const getAffiliatesQueryResult = await query(
-    "SELECT sellers.name FROM sellers WHERE role = $1",
+    "SELECT sellers.name FROM sellers WHERE role = $1;",
     [SELLERS_KIND.Affiliate]
   )
 
   const ballances = []
   for (const producer of getAffiliatesQueryResult.rows) {
     const queryResult = await query(
-      "SELECT SUM(transaction_value) FROM transactions WHERE seller_name = $1 AND kind = $2",
+      "SELECT SUM(transaction_value) FROM transactions WHERE seller_name = $1 AND kind = $2;",
       [producer.name, TRANSACTIONS_TYPE.CommisionReceived]
     )
     ballances.push({

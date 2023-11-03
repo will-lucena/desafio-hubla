@@ -50,6 +50,7 @@ app.post("/transactions", upload.single("file"), async (req, res) => {
     return res.status(400).json({
       message: error.message,
       cause: error.cause,
+      error: error.name,
     })
   }
 })
@@ -61,6 +62,7 @@ app.get("/balances", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Fail to load balances",
+      error: error.name,
     })
   }
 })
@@ -100,6 +102,7 @@ app.get("/transactions", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Fail to load transactions",
+      error: error.name,
     })
   }
 })

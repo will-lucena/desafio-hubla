@@ -1,4 +1,5 @@
 import { open } from "fs/promises"
+import { FailToParseError } from "../models/error.js"
 import { Transaction } from "../models/transaction.js"
 
 export const parseTransactions = async (filePath) => {
@@ -29,7 +30,7 @@ export const sanitizeContent = (transaction) => {
   let baseErrorMessage = "Fail to parse transaction"
   const errors = []
 
-  if (!Number(kind)) {
+  if (!Number(kind) || Number(kind) > 4) {
     errors.push("kind")
   }
 
@@ -47,7 +48,7 @@ export const sanitizeContent = (transaction) => {
 
   if (errors.length > 0) {
     const errorMessage = `${baseErrorMessage} ${errors.join(", ")}`
-    throw new Error(errorMessage, { cause: transaction })
+    throw new FailToParseError(transaction, errorMessage)
   }
 
   return new Transaction(kind, date, seller, value, product, transaction)

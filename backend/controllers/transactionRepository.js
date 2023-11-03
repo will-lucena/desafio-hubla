@@ -1,3 +1,4 @@
+import { MissingTransactionError } from "../models/error.js"
 import { TRANSACTIONS_TYPE, Transaction } from "../models/transaction.js"
 
 import { getClient, query } from "../utils/db.js"
@@ -55,15 +56,20 @@ const addBatch = async (transactions) => {
       if (isValidTransaction(transaction, transactions)) {
         await addTransaction(client, transaction)
       } else {
-        throw new Error("missing transaction on affiliate sale", {
-          cause: transaction.raw,
-        })
+        throw new MissingTransactionError(
+          transaction.raw,
+          "missing transaction on affiliate sale"
+        )
       }
     }
+    await client.query("END TRANSACTION")
     await client.query("COMMIT")
   } catch (error) {
     const customError = handleError(error)
-    client.query("ROLLBACK")
+    await client.query("ROLLBACK")
+    await client.query(
+      "DELETE FROM sellers WHERE NOT EXISTS (SELECT 1 FROM transactions WHERE transactions.seller_name = sellers.name);"
+    )
     throw customError
   } finally {
     client.release()

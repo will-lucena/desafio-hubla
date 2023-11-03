@@ -1,4 +1,5 @@
 import PgPool from "pg"
+import { FailToQueryError } from "../models/error.js"
 
 const { Pool } = PgPool
 
@@ -33,7 +34,7 @@ export const query = async (text, params) => {
     // console.log("executed query", { text, duration, rows: res.rowCount });
     return res
   } catch (error) {
-    throw new Error("Fail to query", { cause: text })
+    throw new FailToQueryError(text)
   }
 }
 
