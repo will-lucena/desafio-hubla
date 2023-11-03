@@ -14,8 +14,8 @@
 </template>
 
 <script setup>
+import TransactionsListItem from '@/components/TransactionsListItem.vue'
 import { computed, ref } from 'vue'
-import TransactionsListItem from './TransactionsListItem.vue'
 
 const props = defineProps({
   transactions: { type: Array, default: () => [] }
@@ -90,6 +90,8 @@ function sortBySeller() {
   &__row {
     display: flex;
     flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 
     padding: 1rem 0.5rem;
 
