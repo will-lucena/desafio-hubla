@@ -1,39 +1,43 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import Index from '@/views/Index.vue'
+import { provide, ref } from 'vue'
+import ErrorAlert from './components/ErrorAlert.vue'
+
+const showError = ref(false)
+const errorMessage = ref('')
+
+function onError(message, timeout = 3000) {
+  if (!showError.value) {
+    errorMessage.value = message
+    showError.value = !showError.value
+    const timeoutInstance = setTimeout(() => {
+      showError.value = false
+      errorMessage.value = ''
+      clearTimeout(timeoutInstance)
+    }, timeout)
+  }
+}
+
+provide('error', {
+  onError
+})
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+  <Index />
+  <Transition>
+    <ErrorAlert v-if="showError" :message="errorMessage" />
+  </Transition>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
