@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <main class="main">
     <form class="uploader_form">
-      <FileUploader @success="onUploadSuccess" @fail="onUploadFail" />
+      <FileUploader @success="onUploadSuccess" />
     </form>
 
     <section v-if="hasBalances" class="balances__container">
@@ -19,16 +19,18 @@
     </section>
 
     <TransactionsList :transactions="filteredTransactions" />
-  </div>
+  </main>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { loadBalances } from '../api/balances'
-import { loadTransactions } from '../api/transactions'
-import FileUploader from './FileUploader.vue'
-import SellerCard from './SellerCard.vue'
-import TransactionsList from './TransactionsList.vue'
+import { loadBalances } from '@/api/balances'
+import { loadTransactions } from '@/api/transactions'
+import FileUploader from '@/components/FileUploader.vue'
+import SellerCard from '@/components/SellerCard.vue'
+import TransactionsList from '@/components/TransactionsList.vue'
+import { ERROR_TYPES, buildFailToQueryErrorMessage } from '@/utils/errors'
+import { computed, inject, onMounted, ref } from 'vue'
+const { onError } = inject('error')
 
 const transactions = ref([])
 const balances = ref([])
@@ -44,29 +46,38 @@ const filteredTransactions = computed(() => {
 })
 
 function onUploadSuccess(payload) {
-  loadBalances()
-    .then(({ data }) => {
-      balances.value = data
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-
+  handleBalanceLoad()
   if (transactions.value.length > 0) {
-    loadTransactions()
-      .then(({ data }) => {
-        transactions.value = data
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    handleTransactionsLoad()
   } else {
     transactions.value = payload
   }
 }
 
-function onUploadFail(error) {
-  console.log(error)
+function handleBalanceLoad() {
+  loadBalances()
+    .then(({ data }) => {
+      balances.value = data
+    })
+    .catch((error) => {
+      if (error.error == ERROR_TYPES.FAIL_TO_QUERY) {
+        onError(buildFailToQueryErrorMessage())
+      }
+      onError(error)
+    })
+}
+
+function handleTransactionsLoad() {
+  loadTransactions()
+    .then(({ data }) => {
+      transactions.value = data
+    })
+    .catch((error) => {
+      if (error.error == ERROR_TYPES.FAIL_TO_QUERY) {
+        onError(buildFailToQueryErrorMessage())
+      }
+      onError(error)
+    })
 }
 
 function onClickSellerCard(name) {
@@ -82,25 +93,17 @@ function isFilteredBy(name) {
 }
 
 onMounted(() => {
-  loadTransactions()
-    .then(({ data }) => {
-      transactions.value = data
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-
-  loadBalances()
-    .then(({ data }) => {
-      balances.value = data
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  handleTransactionsLoad()
+  handleBalanceLoad()
 })
 </script>
 
 <style lang="scss" scoped>
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
 .balances {
   display: flex;
   flex-direction: row;

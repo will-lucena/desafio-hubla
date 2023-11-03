@@ -1,6 +1,14 @@
 <template>
   <div class="file_uploader">
-    <input ref="uploader" id="uploader" type="file" accept=".txt" @change="onUpload" hidden />
+    <input
+      ref="uploader"
+      id="uploader"
+      :key="uploaderKey"
+      type="file"
+      accept=".txt"
+      @change="onUpload"
+      hidden
+    />
 
     <p @click="onClickOpenUploader">
       <span v-if="hasDragnDrop">Arrasta e solta o arquivo aqui ou </span>
@@ -11,10 +19,17 @@
 
 <script setup>
 import { uploadTransactionsFile } from '@/api/transactions'
-import { ref } from 'vue'
+import {
+  ERROR_TYPES,
+  buildFailToParseErrorMessage,
+  buildMissingTransactionErrorMessage
+} from '@/utils/errors'
+import { inject, ref } from 'vue'
+const { onError } = inject('error')
 
-const emit = defineEmits(['success', 'fail'])
+const emit = defineEmits(['success'])
 const uploader = ref(null)
+const uploaderKey = ref(0)
 
 const hasDragnDrop = ref(false)
 
@@ -27,7 +42,16 @@ function onUpload() {
         emit('success', data)
       })
       .catch((error) => {
-        emit('fail', error)
+        if (error.error == ERROR_TYPES.MISSING_TRANSACTION) {
+          onError(buildMissingTransactionErrorMessage(error.cause), 7000)
+        } else if (error.error == ERROR_TYPES.FAIL_TO_PARSE) {
+          onError(buildFailToParseErrorMessage(error.cause, error.message))
+        } else {
+          onError(error)
+        }
+      })
+      .finally(() => {
+        uploaderKey.value++
       })
   }
 }
