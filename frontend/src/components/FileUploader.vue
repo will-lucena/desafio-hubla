@@ -21,6 +21,7 @@
 import { uploadTransactionsFile } from '@/api/transactions'
 import {
   ERROR_TYPES,
+  buildDuplicatedTransactionErrorMessage,
   buildFailToParseErrorMessage,
   buildMissingTransactionErrorMessage
 } from '@/utils/errors'
@@ -46,6 +47,8 @@ function onUpload() {
           onError(buildMissingTransactionErrorMessage(error.cause), 7000)
         } else if (error.error == ERROR_TYPES.FAIL_TO_PARSE) {
           onError(buildFailToParseErrorMessage(error.cause, error.message))
+        } else if (error.error == ERROR_TYPES.DUPLICATED_TRANSACTION) {
+          onError(buildDuplicatedTransactionErrorMessage(error.cause))
         } else {
           onError(error)
         }

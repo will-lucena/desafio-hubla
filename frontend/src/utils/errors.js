@@ -1,7 +1,8 @@
 export const ERROR_TYPES = {
   MISSING_TRANSACTION: 'MissingTransaction',
   FAIL_TO_QUERY: 'FailToQuery',
-  FAIL_TO_PARSE: 'FailToParse'
+  FAIL_TO_PARSE: 'FailToParse',
+  DUPLICATED_TRANSACTION: 'DuplicatedTransaction'
 }
 
 export const buildMissingTransactionErrorMessage = (cause) => {
@@ -28,4 +29,8 @@ export const buildFailToParseErrorMessage = (cause, message) => {
   })
 
   return `Erro ao ler: ${errorMessage.join(', ')} em ${cause}`
+}
+
+export const buildDuplicatedTransactionErrorMessage = (cause) => {
+  return `Transação já existe na base de dados: ${cause}`
 }
