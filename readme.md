@@ -53,7 +53,7 @@ terá toda a solução rodando em instantes, podendo acessa-la em `localhost:517
        que funcione facilmente fora do seu ambiente pessoal.
 1. [x] Use qualquer banco de dados relacional.
 1. [x] Use commits pequenos no Git e escreva uma boa descrição para cada um.
-1. [x] Escreva unit tests tanto no backend quanto do frontend.
+1. [ ] Escreva unit tests tanto no backend quanto do frontend.
 1. [x] Faça o código mais legível e limpo possível.
 1. [x] Escreva o código (nomes e comentários) em inglês. A documentação pode ser
        em português se preferir.
