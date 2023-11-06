@@ -1,4 +1,4 @@
-import { Transaction } from "../models/transaction"
+import { Transaction } from "../src/models/transaction"
 
 export const correctTransaction = {
   raw: "12022-01-15T19:20:30-03:00CURSO DE BEM-ESTAR            0000012750JOSE CARLOS",
@@ -7,7 +7,8 @@ export const correctTransaction = {
     "2022-01-15T19:20:30-03:00",
     "JOSE CARLOS",
     "0000012750",
-    "CURSO DE BEM-ESTAR"
+    "CURSO DE BEM-ESTAR",
+    "12022-01-15T19:20:30-03:00CURSO DE BEM-ESTAR            0000012750JOSE CARLOS"
   ),
 }
 

@@ -1,4 +1,4 @@
-import { parseTransactions, sanitizeContent } from "../utils/parser"
+import { parseTransactions, sanitizeContent } from "../src/utils/parser"
 import {
   badFilePath,
   correctTransaction,
