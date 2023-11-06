@@ -1,4 +1,7 @@
-import { MissingTransactionError } from "../models/error.js"
+import {
+  DuplicatedTransactionError,
+  MissingTransactionError,
+} from "../models/error.js"
 import { TRANSACTIONS_TYPE, Transaction } from "../models/transaction.js"
 
 import { getClient, query } from "../utils/db.js"
@@ -105,9 +108,7 @@ const isValidTransaction = (transaction, transactions) => {
 
 const handleError = (error) => {
   if (error.message.includes("duplicate key value")) {
-    return new Error("Duplicated transaction", {
-      cause: error.detail,
-    })
+    return new DuplicatedTransactionError(error.detail)
   }
 
   return error

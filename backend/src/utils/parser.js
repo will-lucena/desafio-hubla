@@ -30,7 +30,7 @@ export const sanitizeContent = (transaction) => {
   let baseErrorMessage = "Fail to parse transaction"
   const errors = []
 
-  if (!Number(kind) || Number(kind) > 4) {
+  if (!Number(kind) || Number(kind) > 4 || Number(kind) < 1) {
     errors.push("kind")
   }
 
